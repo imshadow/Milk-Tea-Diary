@@ -82,8 +82,16 @@ export async function fetchCardData() {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
-    const session = await auth();
-    const userId = session?.user?.id;
+    let userId;
+    try {
+      const session = await auth();
+      userId = session?.user?.id;
+    } catch (err) {
+      console.error(err);
+    }
+    if (!userId) {
+      userId = '410544b2-4001-4271-9855-fec4b6a6442a';
+    }
     const totalAmountPromise = sql`SELECT SUM(amount) AS "amount" FROM t_milk_tea_records WHERE user_id = ${userId}`;
     const totalAmount7DaysPromise = sql`SELECT SUM(amount) AS "amount" FROM t_milk_tea_records WHERE user_id = ${userId} AND date >= CURRENT_DATE - INTERVAL '7 days'`;
     const totalCountPromise = sql`SELECT COUNT(0) AS "count" FROM t_milk_tea_records WHERE user_id = ${userId}`;

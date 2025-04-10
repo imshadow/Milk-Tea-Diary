@@ -199,4 +199,6 @@ export async function createUser(prevState: UserState, formData: FormData) {
 
   await authenticate(undefined, formData);
 
+  return prevState;
+
 }
